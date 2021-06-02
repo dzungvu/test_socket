@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Test Websocket</title>
+</head>
+<body>
+
+<h1>Testing socket page</h1>
+<p>
+<h3>Instruction: </h3>
+1. Get ws url which is listening on your device</br>
+2. Copy and paste it in <b>socket url</b> bellow</br>
+3. Click on <b>Connect</b> button and wait until browser said it connected successfully</br>
+4. Enter your json data into "Data to send" box</br>
+5. Click send</br>
+</br>
+Note: Bellow line "Status:" is what browser's socket receive.</br></br>
+</p>
+
+<form id="myForm" action="/nothing.asp">
+  <label for="socket_url">Socket url:</label>
+  <input type="text" id="socket_url" name="socket_url" value="ws://echo.websocket.org"><br><br>
+</form>
+<button onclick="myFunction()">Connect</button>
+<p id="demo"></p>
+<p>Status:</p>
+<p id="status"></p>
+
+
+<form id="dataSend" action="/nothing.asp">
+  <label for="data_send">Data to send:</label>
+  <textarea id="data_send" name="data_send" rows="10" cols="100" placeholder="Place your data">{"customdata1":"","customdata2":"","customdata3":"","customdata4":"","customdata5":"","type":"12","departure":"1"}</textarea>
+</form>
+<button onclick="sendData()">Send</button>
+<p id="sendValue"></p>
+
+
+<script>
+let socket
+function myFunction() {
+  document.getElementById("myForm").action = "/nothing.asp";
+  var url = document.getElementById("socket_url").value;
+  document.getElementById("demo").innerHTML = url
+  try {
+        socket = new WebSocket(url);
+        socket.onopen = function() {
+            alert("[open] Connection established");
+            document.getElementById("status").innerHTML = `Open socket successfully`
+        }
+
+        socket.onmessage = function(event) {
+            document.getElementById("status").innerHTML = `${event.data}`
+        };
+
+        socket.onclose = function(event) {
+            if (event.wasClean) {
+                alert(`[close] Connection closed cleanly, code=${event.code} reason=${event.reason}`);
+            } else {
+                // e.g. server process killed or network down
+                // event.code is usually 1006 in this case
+                alert('[close] Connection died');
+                document.getElementById("status").innerHTML = `Closed`
+            }
+        };
+
+        socket.onerror = function(error) {
+            alert(`[error] ${error.message}`);
+            document.getElementById("status").innerHTML = `[error] ${error.message}`
+        };
+  } catch (err) {
+      document.getElementById("status").innerHTML = `Exception: ${err}`
+  }
+}
+
+function sendData() {
+    document.getElementById("dataSend").action = "/nothing.asp";
+    let data = document.getElementById("data_send").value
+    document.getElementById("sendValue").innerHTML = data
+    socket.send(data)
+}
+</script>
+
+</body>
+</html>
