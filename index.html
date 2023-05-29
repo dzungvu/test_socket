@@ -44,6 +44,7 @@ function myFunction() {
   var url = document.getElementById("socket_url").value;
   document.getElementById("demo").innerHTML = url
   try {
+    console.log("Hello world!!!!!!!");
         socket = new WebSocket(url);
         socket.onopen = function() {
             alert("[open] Connection established");
